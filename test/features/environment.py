@@ -15,6 +15,7 @@ from test.features.sats import fixtures_sat
 from test.features.staging import fixtures_staging
 from test.features.t_links import fixtures_t_link
 from test.features.xts import fixtures_xts
+from test.features.rts import fixtures_rts
 
 fixture_registry_utils = {
     "fixture.enable_sha": behave_fixtures.enable_sha,
@@ -149,6 +150,12 @@ fixtures_registry = {
         {"snowflake": fixtures_xts.xts_snowflake,
          "bigquery": fixtures_xts.xts_bigquery,
          "sqlserver": fixtures_xts.xts_sqlserver,
+         "databricks": ''},
+
+    "fixture.rts":
+        {"snowflake": fixtures_rts.rts_snowflake,
+         "bigquery": fixtures_rts.rts_bigquery,
+         "sqlserver": fixtures_rts.rts_sqlserver,
          "databricks": ''},
 
     "fixture.pit":

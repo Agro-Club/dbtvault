@@ -27,6 +27,7 @@ def raw_vault_structure(model_name, vault_structure, config=None, **kwargs):
         "eff_sat": eff_sat,
         "t_link": t_link,
         "xts": xts,
+        "rts": rts,
         "ma_sat": ma_sat,
         "bridge": bridge,
         "pit": pit
@@ -255,6 +256,30 @@ def xts(model_name, src_pk, src_satellite, src_ldts, src_source, source_model, c
     template_to_file(template, model_name)
 
 
+def rts(model_name, src_pk, src_satellite, src_ldts, src_source, source_model, config=None, depends_on=""):
+    """
+    Generate a RTS template
+        :param model_name: Name of the model file
+        :param src_pk: Source pk
+        :param src_satellite: Satellite to track
+        :param src_ldts: Source load date timestamp
+        :param src_source: Source record source column
+        :param source_model: Model name to select from
+        :param config: Optional model config
+        :param depends_on: Optional forced dependency
+    """
+
+    template = f"""
+    {depends_on}
+    {{{{ config({config}) }}}}
+    {{{{ dbtvault.rts(src_pk={src_pk}, src_satellite={src_satellite}, 
+                      src_ldts={src_ldts}, src_source={src_source},
+                      source_model={source_model}) }}}}
+    """
+
+    template_to_file(template, model_name)
+
+
 def pit(model_name, source_model, src_pk, as_of_dates_table, satellites,
         stage_tables, src_ldts, depends_on="", config=None):
     """
@@ -455,7 +480,8 @@ def extract_column_names(context, model_name: str, model_params: dict, ignored_p
     processing_functions = {
         "pit": process_pit_columns,
         "bridge": process_bridge_columns,
-        "xts": process_xts_columns
+        "xts": process_xts_columns,
+        "rts": process_rts_columns
     }
 
     processed_headings = []
@@ -494,6 +520,7 @@ def process_structure_metadata(vault_structure, model_name, config, **kwargs):
         "sat": "incremental",
         "eff_sat": "incremental",
         "xts": "incremental",
+        "rts": "incremental",
         "t_link": "incremental",
         "ma_sat": "incremental",
         "pit": "pit_incremental",
@@ -527,6 +554,15 @@ def process_structure_metadata(vault_structure, model_name, config, **kwargs):
 
 
 def process_xts_columns(column_def: dict):
+    column_def = {k: v for k, v in column_def.items() if isinstance(v, dict)}
+
+    if not column_def:
+        return dict()
+    else:
+        return [f"{list(col.keys())[0]}" for col in list(column_def.values())[0].values()]
+
+
+def process_rts_columns(column_def: dict):
     column_def = {k: v for k, v in column_def.items() if isinstance(v, dict)}
 
     if not column_def:

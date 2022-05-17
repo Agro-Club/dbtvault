@@ -20,11 +20,11 @@ Feature: [RTS-INC] Record Tracking Satellites
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
-      | CUSTOMER_PK | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1001') | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1001') | 1993-01-02 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 1993-01-02 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1003') | 1993-01-03 | SAT_CUSTOMER   | *    |  1         |
+      | CUSTOMER_PK | LOAD_DATE  | SATELLITE_NAME | RSRC |
+      | md5('1001') | 1993-01-01 | SAT_CUSTOMER   | *    |
+      | md5('1001') | 1993-01-02 | SAT_CUSTOMER   | *    |
+      | md5('1002') | 1993-01-02 | SAT_CUSTOMER   | *    |
+      | md5('1003') | 1993-01-03 | SAT_CUSTOMER   | *    |
 
 
   @fixture.rts
