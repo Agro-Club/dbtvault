@@ -1,7 +1,7 @@
 Feature: [RTS-INC] Record Tracking Satellites
 
   @fixture.rts
-  Scenario: [RTS-INC-01] Load multiple subsequent stages into a single stage XTS with no timeline change
+  Scenario: [RTS-INC-01] Load multiple subsequent stages into a single stage RTS with no timeline change
     Given the RTS rts is empty
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
@@ -20,15 +20,15 @@ Feature: [RTS-INC] Record Tracking Satellites
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
-      | CUSTOMER_PK | LOAD_DATE  | SATELLITE_NAME | RSRC |
-      | md5('1001') | 1993-01-01 | SAT_CUSTOMER   | *    |
-      | md5('1001') | 1993-01-02 | SAT_CUSTOMER   | *    |
-      | md5('1002') | 1993-01-02 | SAT_CUSTOMER   | *    |
-      | md5('1003') | 1993-01-03 | SAT_CUSTOMER   | *    |
+      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF          |
+      | md5('1001') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1001') | 1993-01-02 | *      | md5('1993-01-02') |
+      | md5('1002') | 1993-01-02 | *      | md5('1993-01-02') |
+      | md5('1003') | 1993-01-03 | *      | md5('1993-01-03') |
 
 
   @fixture.rts
-  Scenario: [RTS-INC-02] Load duplicated data into a pre-populated XTS
+  Scenario: [RTS-INC-02] Load duplicated data into a pre-populated RTS
     Given the RTS rts is already populated with data
       | CUSTOMER_ID | CUSTOMER_NAME | CUSTOMER_DOB | CUSTOMER_PHONE  | LOAD_DATE  | SOURCE |
       | 1001        | Alice         | 1997-04-24   | 17-214-233-1214 | 1992-12-31 | *      |

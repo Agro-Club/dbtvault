@@ -256,11 +256,12 @@ def xts(model_name, src_pk, src_satellite, src_ldts, src_source, source_model, c
     template_to_file(template, model_name)
 
 
-def rts(model_name, src_pk, src_ldts, src_source, source_model, config=None, depends_on=""):
+def rts(model_name, src_pk, src_ldts, src_source, src_hashdiff, source_model, config=None, depends_on=""):
     """
     Generate a RTS template
         :param model_name: Name of the model file
         :param src_pk: Source pk
+        :param src_hashdiff: Source hashdiff
         :param src_ldts: Source load date timestamp
         :param src_source: Source record source column
         :param source_model: Model name to select from
@@ -273,6 +274,7 @@ def rts(model_name, src_pk, src_ldts, src_source, source_model, config=None, dep
     {{{{ config({config}) }}}}
     {{{{ dbtvault.rts(src_pk={src_pk},
                       src_ldts={src_ldts}, src_source={src_source},
+                      src_hashdiff={src_hashdiff},
                       source_model={source_model}) }}}}
     """
 

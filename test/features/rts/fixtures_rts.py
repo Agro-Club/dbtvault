@@ -11,17 +11,20 @@ def rts_snowflake(context):
 
     context.hashed_columns = {
         "STG_CUSTOMER": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
         "STG_CUSTOMER_1": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
         "STG_CUSTOMER_2": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
@@ -107,7 +110,9 @@ def rts_snowflake(context):
             #         # }
             #     },
             # },
-            "src_source": "SOURCE"
+
+            "src_source": "SOURCE",
+            "src_hashdiff": "HASHDIFF"
         },
         "RTS_COMPPK": {
             "src_pk": ["CUSTOMER_PK", "CUSTOMER_PHONE"],
@@ -122,7 +127,9 @@ def rts_snowflake(context):
             #         # }
             #     },
             # },
-            "src_source": "SOURCE"
+
+            "src_source": "SOURCE",
+            "src_hashdiff": "HASHDIFF"
         },
         # "RTS_2SAT": {
         #     "src_pk": "CUSTOMER_PK",
@@ -275,7 +282,7 @@ def rts_snowflake(context):
         "STG_CUSTOMER": {
             "column_types": {
                 "CUSTOMER_PK": "BINARY(16)",
-                # "HASHDIFF": "BINARY(16)",
+                "HASHDIFF": "BINARY(16)",
                 "EFFECTIVE_FROM": "DATE",
                 # "SATELLITE_NAME": "VARCHAR",
                 "CUSTOMER_ID": "VARCHAR",
@@ -334,8 +341,11 @@ def rts_snowflake(context):
                 "CUSTOMER_PK": "BINARY(16)",
                 "LOAD_DATE": "DATE",
                 # "SATELLITE_NAME": "VARCHAR",
-                # "HASHDIFF": "BINARY(16)",
-                "SOURCE": "VARCHAR"
+
+
+                "SOURCE": "VARCHAR",
+                "HASHDIFF": "BINARY(16)",
+
             }
         },
         "RTS_COMPPK": {
@@ -344,8 +354,10 @@ def rts_snowflake(context):
                 "CUSTOMER_PHONE": "VARCHAR",
                 "LOAD_DATE": "DATE",
                 # "SATELLITE_NAME": "VARCHAR",
-                # "HASHDIFF": "BINARY(16)",
-                "SOURCE": "VARCHAR"
+
+
+                "SOURCE": "VARCHAR",
+                "HASHDIFF": "BINARY(16)"
             }
         }
         # "RTS_2SAT": {
@@ -379,17 +391,20 @@ def rts_bigquery(context):
 
     context.hashed_columns = {
         "STG_CUSTOMER": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
         "STG_CUSTOMER_1": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
         "STG_CUSTOMER_2": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
@@ -465,6 +480,7 @@ def rts_bigquery(context):
         "RTS": {
             "src_pk": "CUSTOMER_PK",
             "src_ldts": "LOAD_DATE",
+
             # "src_satellite": {
             #     "SATELLITE_CUSTOMER": {
             #         "sat_name": {
@@ -475,11 +491,13 @@ def rts_bigquery(context):
             #         # }
             #     },
             # },
-            "src_source": "SOURCE"
+            "src_source": "SOURCE",
+            "src_hashdiff": "HASHDIFF"
         },
         "RTS_COMPPK": {
             "src_pk": ["CUSTOMER_PK", "CUSTOMER_PHONE"],
             "src_ldts": "LOAD_DATE",
+
             # "src_satellite": {
             #     "SATELLITE_CUSTOMER": {
             #         "sat_name": {
@@ -490,7 +508,9 @@ def rts_bigquery(context):
             #         # }
             #     },
             # },
-            "src_source": "SOURCE"
+
+            "src_source": "SOURCE",
+            "src_hashdiff": "HASHDIFF"
         },
         # "RTS_2SAT": {
         #     "src_pk": "CUSTOMER_PK",
@@ -643,7 +663,7 @@ def rts_bigquery(context):
         "STG_CUSTOMER": {
             "column_types": {
                 "CUSTOMER_PK": "STRING",
-                # "HASHDIFF": "STRING",
+                "HASHDIFF": "STRING",
                 "EFFECTIVE_FROM": "DATE",
                 # "SATELLITE_NAME": "STRING",
                 "CUSTOMER_ID": "STRING",
@@ -702,8 +722,9 @@ def rts_bigquery(context):
                 "CUSTOMER_PK": "STRING",
                 "LOAD_DATE": "DATE",
                 # "SATELLITE_NAME": "STRING",
-                # "HASHDIFF": "STRING",
-                "SOURCE": "STRING"
+
+                "SOURCE": "STRING",
+                "HASHDIFF": "STRING"
             }
         },
         "RTS_COMPPK": {
@@ -712,8 +733,9 @@ def rts_bigquery(context):
                 "CUSTOMER_PHONE": "STRING",
                 "LOAD_DATE": "DATE",
                 # "SATELLITE_NAME": "STRING",
-                # "HASHDIFF": "STRING",
-                "SOURCE": "STRING"
+
+                "SOURCE": "STRING",
+                "HASHDIFF": "STRING"
             }
         },
         # "RTS_2SAT": {
@@ -747,17 +769,20 @@ def rts_sqlserver(context):
 
     context.hashed_columns = {
         "STG_CUSTOMER": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
         "STG_CUSTOMER_1": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
         "STG_CUSTOMER_2": {
-            "CUSTOMER_PK": "CUSTOMER_ID"
+            "CUSTOMER_PK": "CUSTOMER_ID",
+            "HASHDIFF": "LOAD_DATE"
             # "HASHDIFF": {"is_hashdiff": True,
             #              "columns": ["CUSTOMER_ID", "CUSTOMER_FIRSTNAME", "CUSTOMER_LASTNAME"]}
         },
@@ -843,7 +868,8 @@ def rts_sqlserver(context):
             #         # }
             #     },
             # },
-            "src_source": "SOURCE"
+            "src_source": "SOURCE",
+            "src_hashdiff": "HASHDIFF"
         },
         "RTS_COMPPK": {
             "src_pk": ["CUSTOMER_PK", "CUSTOMER_PHONE"],
@@ -858,7 +884,8 @@ def rts_sqlserver(context):
             #         # }
             #     },
             # },
-            "src_source": "SOURCE"
+            "src_source": "SOURCE",
+            "src_hashdiff": "HASHDIFF"
         },
         # "RTS_2SAT": {
         #     "src_pk": "CUSTOMER_PK",
@@ -1011,7 +1038,7 @@ def rts_sqlserver(context):
         "STG_CUSTOMER": {
             "column_types": {
                 "CUSTOMER_PK": "BINARY(16)",
-                # "HASHDIFF": "BINARY(16)",
+                "HASHDIFF": "BINARY(16)",
                 "EFFECTIVE_FROM": "DATE",
                 # "SATELLITE_NAME": "VARCHAR(50)",
                 "CUSTOMER_ID": "VARCHAR(50)",
@@ -1070,8 +1097,9 @@ def rts_sqlserver(context):
                 "CUSTOMER_PK": "BINARY(16)",
                 "LOAD_DATE": "DATE",
                 # "SATELLITE_NAME": "VARCHAR(50)",
-                # "HASHDIFF": "BINARY(16)",
-                "SOURCE": "VARCHAR(50)"
+
+                "SOURCE": "VARCHAR(50)",
+                "HASHDIFF": "BINARY(16)"
             }
         },
         "RTS_COMPPK": {
@@ -1080,8 +1108,9 @@ def rts_sqlserver(context):
                 "CUSTOMER_PHONE": "VARCHAR(50)",
                 "LOAD_DATE": "DATE",
                 # "SATELLITE_NAME": "VARCHAR",
-                # "HASHDIFF": "BINARY(16)",
-                "SOURCE": "VARCHAR(50)"
+
+                "SOURCE": "VARCHAR(50)",
+                "HASHDIFF": "BINARY(16)"
             }
         },
         # "RTS_2SAT": {

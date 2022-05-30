@@ -12,11 +12,11 @@ Feature: [RTS] Record Tracking Satellites
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
-      | CUSTOMER_PK | LOAD_DATE  | SOURCE |
-      | md5('1001') | 1993-01-01 | *      |
-      | md5('1002') | 1993-01-01 | *      |
-      | md5('1003') | 1993-01-01 | *      |
-      | md5('1004') | 1993-01-01 | *      |
+      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF          |
+      | md5('1001') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1002') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1003') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1004') | 1993-01-01 | *      | md5('1993-01-01') |
 
   @fixture.rts
   Scenario: [RTS-02] Load one stage of data into a non-existent single satellite RTS
@@ -30,11 +30,11 @@ Feature: [RTS] Record Tracking Satellites
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
-      | CUSTOMER_PK | LOAD_DATE  | SOURCE |
-      | md5('1001') | 1993-01-01 | *      |
-      | md5('1002') | 1993-01-01 | *      |
-      | md5('1003') | 1993-01-01 | *      |
-      | md5('1004') | 1993-01-01 | *      |
+      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF          |
+      | md5('1001') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1002') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1003') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1004') | 1993-01-01 | *      | md5('1993-01-01') |
 
   @fixture.rts
   Scenario: [RTS-03] Load duplicated data in one stage into a non-existent single satellite RTS
@@ -108,7 +108,7 @@ Feature: [RTS] Record Tracking Satellites
       | 1004        | Dom                | Davies            | 2018-04-13   | 17-214-233-1217 | East Sussex     | Brighton      | 1993-01-01 | *      |
     And I stage the STG_CUSTOMER_2SAT data
     When I load the RTS_2SAT rts
-    Then the XTS_2SAT table should contain expected data
+    Then the RTS_2SAT table should contain expected data
       | CUSTOMER_PK | LOAD_DATE  | SATELLITE_NAME       | RSRC | APPEARANCE |
       | md5('1001') | 1993-01-01 | SAT_CUSTOMER         | *    | 1          |
       | md5('1003') | 1993-01-01 | SAT_CUSTOMER         | *    | 1          |
