@@ -41,18 +41,18 @@ Feature: [RTS-INC] Record Tracking Satellites
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
-      | CUSTOMER_PK | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1001') | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1001') | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
+      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF           |
+      | md5('1001') | 1992-12-31 | *      |  md5('1992-12-31') |
+      | md5('1001') | 1993-01-01 | *      |  md5('1993-01-01') |
+      | md5('1002') | 1993-01-01 | *      |  md5('1993-01-01') |
 
 
 
   @fixture.rts
   Scenario: [RTS-INC-03] Subsequent loads with no timeline change into a pre-populated RTS
     Given the RTS rts is already populated with data
-      | CUSTOMER_PK | LOAD_DATE | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1000') | 1992-12-31| SAT_CUSTOMER   | *    |  1         |
+      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF          |
+      | md5('1000') | 1992-12-31 | *      | md5('1992-12-31') |
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
       | 1000        | Zak                | Zon               | 1992-12-25   | 17-214-233-1234 | Cambridgeshire  | Cambridge     | 1993-01-01 | *      |
@@ -78,16 +78,16 @@ Feature: [RTS-INC] Record Tracking Satellites
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
-      | CUSTOMER_PK | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1000') | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1000') | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1001') | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1000') | 1993-01-02 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1001') | 1993-01-02 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 1993-01-02 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1001') | 1993-01-03 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 1993-01-03 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1003') | 1993-01-03 | SAT_CUSTOMER   | *    |  1         |
+      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF           |
+      | md5('1000') | 1992-12-31 | *      |  md5('1992-12-31') |
+      | md5('1000') | 1993-01-01 | *      |  md5('1993-01-01') |
+      | md5('1001') | 1993-01-01 | *      |  md5('1993-01-01') |
+      | md5('1000') | 1993-01-02 | *      |  md5('1993-01-02') |
+      | md5('1001') | 1993-01-02 | *      |  md5('1993-01-02') |
+      | md5('1002') | 1993-01-02 | *      |  md5('1993-01-02') |
+      | md5('1001') | 1993-01-03 | *      |  md5('1993-01-03') |
+      | md5('1002') | 1993-01-03 | *      |  md5('1993-01-03') |
+      | md5('1003') | 1993-01-03 | *      |  md5('1993-01-03') |
 
 
   @fixture.rts
@@ -218,9 +218,9 @@ Feature: [RTS-INC] Record Tracking Satellites
   @fixture.rts
   Scenario: [RTS-INC-07] Null unique identifier values are not loaded into an pre-populated RTS
     Given the RTS rts is already populated with data
-      | CUSTOMER_PK | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1001') | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
+      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF          |
+      | md5('1001') | 1992-12-31 | *      | md5('1992-12-31') |
+      | md5('1002') | 1992-12-31 | *      | md5('1992-12-31') |
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
       | <null>      | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
@@ -228,14 +228,14 @@ Feature: [RTS-INC] Record Tracking Satellites
       | 1003        | Chad               | Clarke            | 2013-02-04   | 17-214-233-1216 | Lincolnshire    | Lincoln       | 1993-01-01 | *      |
       | 1004        | Dom                | Davies            | 2018-04-13   | 17-214-233-1217 | East Sussex     | Brighton      | 1993-01-01 | *      |
     And I stage the STG_CUSTOMER data
-    When I load the XTS xts
-    Then the XTS table should contain expected data
-      | CUSTOMER_PK | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1001') | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1003') | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1004') | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
+    When I load the RTS rts
+    Then the RTS table should contain expected data
+      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF          |
+      | md5('1001') | 1992-12-31 | *      | md5('1992-12-31') |
+      | md5('1002') | 1992-12-31 | *      | md5('1992-12-31') |
+      | md5('1002') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1003') | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1004') | 1993-01-01 | *      | md5('1993-01-01') |
 
 
   @fixture.rts

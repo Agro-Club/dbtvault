@@ -21,28 +21,30 @@
 
 {{ 'WITH ' }}
 
+
+
 records_to_insert AS (
     SELECT DISTINCT
-    CUSTOMER_PK,
-    LOAD_DATE,
-    "SOURCE",
-    MD5(LOAD_DATE) AS HASHDIFF
-    FROM DBTVAULT_DEV.TEST_CARL_BOYCE.RTS_SEED       --this should be stg_customer
+    s.{{ src_pk }},
+    s.{{ src_ldts }},
+    s.{{ src_source }},
+    s.{{ src_hashdiff }} as HASHDIFF
+    FROM {{ ref('STG_CUSTOMER') }} as s       --this should be stg_customer?       DBTVAULT_DEV.TEST_CARL_BOYCE.STG_CUSTOMER
 
     {%- if dbtvault.is_vault_insert_by_period() or is_incremental() %}
 
     WHERE NOT EXISTS
     (SELECT 1
     FROM
-    (SELECT CUSTOMER_PK,
-            HASHDIFF,
+    (SELECT {{ src_pk }},
+            {{ 'HASHDIFF' }},
             ROW_NUMBER() OVER
-    (PARTITION BY CUSTOMER_PK
-    ORDER BY LOAD_DATE) AS DV_RNK
-    FROM  DBTVAULT_DEV.TEST_CARL_BOYCE.RTS
+    (PARTITION BY {{ src_pk }}
+    ORDER BY {{ src_ldts }}) AS DV_RNK
+    FROM  {{ ref('RTS') }}
     QUALIFY DV_RNK = 1) CUR
-    WHERE CUSTOMER_PK = CUR.CUSTOMER_PK
-    AND HASHDIFF = CUR.HASHDIFF)
+    WHERE s.{{ src_pk }} = CUR.{{ src_pk }}
+    AND s.{{ 'HASHDIFF' }} = CUR.{{ 'HASHDIFF' }})
 
     {%- endif %}
 
