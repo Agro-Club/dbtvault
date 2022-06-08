@@ -28,23 +28,23 @@ Feature: [RTS-INC] Record Tracking Satellites
 
 
   @fixture.rts
-  Scenario: [RTS-INC-02] Load duplicated data into a pre-populated RTS
-    Given the RTS rts is already populated with data
-      | CUSTOMER_ID | CUSTOMER_NAME | CUSTOMER_DOB | CUSTOMER_PHONE  | LOAD_DATE  | SOURCE |
-      | 1001        | Alice         | 1997-04-24   | 17-214-233-1214 | 1992-12-31 | *      |
-    And the RAW_STAGE table contains data
-      | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
-      | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
-      | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
-      | 1002        | Bob                | Barns             | 2006-04-17   | 17-214-233-1215 | Wiltshire       | Swindon       | 1993-01-01 | *      |
-      | 1002        | Bob                | Barns             | 2006-04-17   | 17-214-233-1215 | Wiltshire       | Swindon       | 1993-01-01 | *      |
-    And I stage the STG_CUSTOMER data
-    When I load the RTS rts
-    Then the RTS table should contain expected data
-      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF           |
-      | md5('1001') | 1992-12-31 | *      |  md5('1992-12-31') |
-      | md5('1001') | 1993-01-01 | *      |  md5('1993-01-01') |
-      | md5('1002') | 1993-01-01 | *      |  md5('1993-01-01') |
+#  Scenario: [RTS-INC-02] Load duplicated data into a pre-populated RTS
+#    Given the RTS rts is already populated with data
+#      | CUSTOMER_PK | LOAD_DATE  | SOURCE |
+#      | 1001        | Alice         | 1997-04-24   | 17-214-233-1214 | 1992-12-31 | *      |
+#    And the RAW_STAGE table contains data
+#      | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
+#      | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
+#      | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
+#      | 1002        | Bob                | Barns             | 2006-04-17   | 17-214-233-1215 | Wiltshire       | Swindon       | 1993-01-01 | *      |
+#      | 1002        | Bob                | Barns             | 2006-04-17   | 17-214-233-1215 | Wiltshire       | Swindon       | 1993-01-01 | *      |
+#    And I stage the STG_CUSTOMER data
+#    When I load the RTS rts
+#    Then the RTS table should contain expected data
+#      | CUSTOMER_PK | LOAD_DATE  | SOURCE | HASHDIFF           |
+#      | md5('1001') | 1992-12-31 | *      |  md5('1992-12-31') |
+#      | md5('1001') | 1993-01-01 | *      |  md5('1993-01-01') |
+#      | md5('1002') | 1993-01-01 | *      |  md5('1993-01-01') |
 
 
 
