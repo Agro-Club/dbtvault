@@ -31,50 +31,42 @@ y AS (
                     s.{{ src_source }},
                     s.{{ src_hashdiff }}
     FROM {{ ref(src) }} as s
-    WHERE {{ dbtvault.multikey(src_pk, prefix='s', condition='IS NOT NULL') }}
+     WHERE {{ dbtvault.multikey(src_pk, prefix='s', condition='IS NOT NULL') }}
 ),
 
 {%- endfor %}
 
-x as (
-    SELECT * FROM y
 
-    {%- if is_any_incremental() %}
 
-    WHERE NOT EXISTS (
-        SELECT 1
-        FROM (
-            SELECT {{ src_pk }}, {{ src_hashdiff }},
-            ROW_NUMBER() OVER(
-                PARTITION BY {{ src_pk }}
-                ORDER BY {{ src_ldts }}
-            ) AS DV_RNK
-            FROM {{ this }}
-            QUALIFY DV_RNK = 1
-        ) AS cur
-    WHERE {{ src_pk }} = cur.{{ src_pk }}
-    AND {{ src_hashdiff }} = cur.{{ src_hashdiff }})
-
-    {% endif %}
-),
 
 records_to_insert AS (
     SELECT {{ dbtvault.prefix(source_cols, 'a', alias_target='target') }}
     FROM y AS a
 
-    {%- if is_any_incremental() %}
+
+
+    {%- if dbtvault.is_any_incremental() %}
 
     LEFT JOIN {{ this }} AS d
-    ON a.{{ src_pk }} = d.{{ src_pk }}
+
+    ON a.{{ src_pk }} != NULL
+    AND a.{{ src_hashdiff }} != NULL
+    AND a.{{ src_ldts }} != NULL
+    AND a.{{ src_source }} != NULL
     AND a.{{ src_hashdiff }} = d.{{ src_hashdiff }}
-    WHERE a.{{ src_pk }} = d.{{ src_pk }}
-    AND a.{{ src_hashdiff }} = d.{{ src_hashdiff }}
+    AND a.{{ src_pk }} = d.{{ src_pk }}
+
+
+
 
     {% endif %}
 
 )
 
-SELECT * FROM x
+
+
+
+SELECT * FROM records_to_insert
 
 {%- endmacro -%}
 
