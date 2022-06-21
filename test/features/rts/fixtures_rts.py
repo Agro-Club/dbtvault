@@ -111,8 +111,8 @@ def rts_snowflake(context):
             #     },
             # },
 
-            "src_source": "SOURCE",
-            "src_hashdiff": "HASHDIFF"
+            "src_source": "SOURCE"
+            # "src_hashdiff": "HASHDIFF"
         },
         "RTS_COMPPK": {
             "src_pk": ["CUSTOMER_PK", "CUSTOMER_PHONE"],
@@ -129,7 +129,7 @@ def rts_snowflake(context):
             # },
 
             "src_source": "SOURCE",
-            "src_hashdiff": "HASHDIFF"
+            # "src_hashdiff": "HASHDIFF"
         },
         # "RTS_2SAT": {
         #     "src_pk": "CUSTOMER_PK",
@@ -343,8 +343,8 @@ def rts_snowflake(context):
                 # "SATELLITE_NAME": "VARCHAR",
 
 
-                "SOURCE": "VARCHAR",
-                "HASHDIFF": "BINARY(16)",
+                "SOURCE": "VARCHAR"
+                # "HASHDIFF": "BINARY(16)",
 
             }
         },
@@ -357,7 +357,7 @@ def rts_snowflake(context):
 
 
                 "SOURCE": "VARCHAR",
-                "HASHDIFF": "BINARY(16)"
+                # "HASHDIFF": "BINARY(16)"
             }
         }
         # "RTS_2SAT": {

@@ -12,19 +12,19 @@ Feature: [RTS-COMPPK] Record Tracking Satellites with composite PK
     And I stage the STG_CUSTOMER data
     When I load the RTS_COMPPK rts
     Then the RTS_COMPPK table should contain expected data
-      | CUSTOMER_PK                    | LOAD_DATE  | SOURCE | HASHDIFF          |
-      | md5('1001\|\|17-214-233-1214') | 1993-01-01 | *      | md5('1993-01-01') |
-      | md5('1002\|\|17-214-233-1215') | 1993-01-01 | *      | md5('1993-01-01') |
-      | md5('1003\|\|17-214-233-1216') | 1993-01-01 | *      | md5('1993-01-01') |
-      | md5('1004\|\|17-214-233-1217') | 1993-01-01 | *      | md5('1993-01-01') |
+      | CUSTOMER_PK                    | CUSTOMER_PHONE  | LOAD_DATE  | SOURCE | HASHDIFF          |
+      | md5('1001\|\|17-214-233-1214') | 17-214-233-1214 | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1002\|\|17-214-233-1215') | 17-214-233-1215 | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1003\|\|17-214-233-1216') | 17-214-233-1216 | 1993-01-01 | *      | md5('1993-01-01') |
+      | md5('1004\|\|17-214-233-1217') | 17-214-233-1217 | 1993-01-01 | *      | md5('1993-01-01') |
 
 
   @fixture.rts
   Scenario: [RTS-COMPPK-02] Load record into a pre-populated RTS
     Given the RTS_COMPPK rts is already populated with data
       | CUSTOMER_PK | CUSTOMER_PHONE  | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1001') | 17-214-233-1214 | 1992-31-12 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 17-214-233-1215 | 1992-31-12 | SAT_CUSTOMER   | *    |  1         |
+      | md5('1001') | 17-214-233-1214 | 1992-31-12 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1002') | 17-214-233-1215 | 1992-31-12 | SAT_CUSTOMER   | *    | 1          |
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
       | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
@@ -35,19 +35,19 @@ Feature: [RTS-COMPPK] Record Tracking Satellites with composite PK
     When I load the RTS_COMPPK rts
     Then the RTS_COMPPK table should contain expected data
       | CUSTOMER_PK | CUSTOMER_PHONE  | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1001') | 17-214-233-1214 | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 17-214-233-1215 | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1001') | 17-214-233-1214 | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 17-214-233-1215 | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1003') | 17-214-233-1216 | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1004') | 17-214-233-1217 | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
+      | md5('1001') | 17-214-233-1214 | 1992-12-31 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1002') | 17-214-233-1215 | 1992-12-31 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1001') | 17-214-233-1214 | 1993-01-01 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1002') | 17-214-233-1215 | 1993-01-01 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1003') | 17-214-233-1216 | 1993-01-01 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1004') | 17-214-233-1217 | 1993-01-01 | SAT_CUSTOMER   | *    | 1          |
 
   @fixture.rts
   Scenario: [RTS-COMPPK-03] Load record into a pre-populated RTS
     Given the RTS_COMPPK rts is already populated with data
       | CUSTOMER_PK | CUSTOMER_PHONE  | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1001') | 17-214-233-1214 | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 17-214-233-1215 | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
+      | md5('1001') | 17-214-233-1214 | 1992-12-31 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1002') | 17-214-233-1215 | 1992-12-31 | SAT_CUSTOMER   | *    | 1          |
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
       | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
@@ -62,9 +62,9 @@ Feature: [RTS-COMPPK] Record Tracking Satellites with composite PK
     When I load the RTS_COMPPK rts
     Then the RTS_COMPPK table should contain expected data
       | CUSTOMER_PK | CUSTOMER_PHONE  | LOAD_DATE  | SATELLITE_NAME | RSRC | APPEARANCE |
-      | md5('1001') | 17-214-233-1214 | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 17-214-233-1215 | 1992-12-31 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1001') | 17-214-233-1214 | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1002') | 17-214-233-1215 | 1993-01-01 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1003') | 17-214-233-1216 | 1993-01-02 | SAT_CUSTOMER   | *    |  1         |
-      | md5('1004') | 17-214-233-1217 | 1993-01-02 | SAT_CUSTOMER   | *    |  1         |
+      | md5('1001') | 17-214-233-1214 | 1992-12-31 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1002') | 17-214-233-1215 | 1992-12-31 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1001') | 17-214-233-1214 | 1993-01-01 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1002') | 17-214-233-1215 | 1993-01-01 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1003') | 17-214-233-1216 | 1993-01-02 | SAT_CUSTOMER   | *    | 1          |
+      | md5('1004') | 17-214-233-1217 | 1993-01-02 | SAT_CUSTOMER   | *    | 1          |
