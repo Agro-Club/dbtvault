@@ -1,12 +1,10 @@
 Feature: [RTS] Record Tracking Satellites
 
-
-    @fixture.rts
+  @fixture.rts
   Scenario: [RTS-01] Load one stage of records into an empty single satellite RTS
     Given the RTS rts is empty
-    | CUSTOMER_PK | LOAD_DATE | SOURCE |
-    |             |           |        |
-
+      | CUSTOMER_PK | LOAD_DATE | SOURCE |
+      |             |           |        |
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
       | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
@@ -53,7 +51,6 @@ Feature: [RTS] Record Tracking Satellites
       | CUSTOMER_PK | LOAD_DATE  | SOURCE |
       | md5('1001') | 1993-01-01 | *      |
 
-
   @fixture.rts
   Scenario: [RTS-04] Load duplicated data in one stage into a non-existent single satellite RTS
     Given the RTS table does not exist
@@ -73,12 +70,12 @@ Feature: [RTS] Record Tracking Satellites
       | md5('1003') | 1993-01-01 | *      |
       | md5('1004') | 1993-01-01 | *      |
 
-
+  # TODO: Check, do we track NULLS or not? Case for hashdiff?
   @fixture.rts
   Scenario: [RTS-05] Null unique identifier values are not loaded into an empty existing RTS
     Given the RTS rts is empty
-    | CUSTOMER_PK | LOAD_DATE | SOURCE |
-    |             |           |        |
+      | CUSTOMER_PK | LOAD_DATE | SOURCE |
+      |             |           |        |
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
       | <null>      | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
@@ -93,7 +90,7 @@ Feature: [RTS] Record Tracking Satellites
       | md5('1003') | 1993-01-01 | *      |
       | md5('1004') | 1993-01-01 | *      |
 
-
+  # TODO: Check, do we track NULLS or not? Case for hashdiff?
   @fixture.rts
   Scenario: [RTS-06] Null unique identifier values are not loaded into a non-existent RTS
     Given the RTS table does not exist
@@ -110,7 +107,6 @@ Feature: [RTS] Record Tracking Satellites
       | md5('1002') | 1993-01-01 | *      |
       | md5('1003') | 1993-01-01 | *      |
       | md5('1004') | 1993-01-01 | *      |
-
 
   @fixture.rts
   Scenario: [RTS-07] Load record into a pre-populated RTS
@@ -135,16 +131,4 @@ Feature: [RTS] Record Tracking Satellites
       | md5('1003') | 1993-01-01 | *      |
       | md5('1004') | 1993-01-01 | *      |
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  # TODO: RTS-08 Tests that 'duplicates' coming in on consecutive days are kept

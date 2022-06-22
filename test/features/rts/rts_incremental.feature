@@ -1,7 +1,7 @@
 Feature: [RTS-INC] Record Tracking Satellites
 
   @fixture.rts
-  Scenario: [RTS-INC-01] Load multiple subsequent stages into a single stage RTS with no timeline change
+  Scenario: [RTS-INC-01] Load multiple subsequent stages into a single stage RTS
     Given the RTS rts is empty
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
@@ -26,9 +26,8 @@ Feature: [RTS-INC] Record Tracking Satellites
       | md5('1002') | 1993-01-02 | *      |
       | md5('1003') | 1993-01-03 | *      |
 
-
   @fixture.rts
-  Scenario: [RTS-INC-02] Null unique identifier values are not loaded into an pre-populated RTS
+  Scenario: [RTS-INC-02] Null unique identifier values are not loaded into a pre-populated RTS
     Given the RTS rts is already populated with data
       | CUSTOMER_PK | LOAD_DATE  | SOURCE |
       | md5('1001') | 1992-12-31 | *      |
@@ -50,7 +49,7 @@ Feature: [RTS-INC] Record Tracking Satellites
       | md5('1004') | 1993-01-01 | *      |
 
   @fixture.rts
-  Scenario: [RTS-INC-03] Subsequent loads with no timeline change into a pre-populated RTS
+  Scenario: [RTS-INC-03] Subsequent loads into a pre-populated RTS
     Given the RTS rts is already populated with data
       | CUSTOMER_PK | LOAD_DATE  | SOURCE |
       | md5('1000') | 1992-12-31 | *      |
@@ -66,7 +65,6 @@ Feature: [RTS-INC] Record Tracking Satellites
       | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-02 | *      |
       | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-02 | *      |
       | 1002        | Bob                | Barns             | 2006-04-17   | 17-214-233-1215 | Wiltshire       | Swindon       | 1993-01-02 | *      |
-
     And I stage the STG_CUSTOMER data
     And I load the RTS rts
     And the RAW_STAGE table contains data
@@ -75,7 +73,6 @@ Feature: [RTS-INC] Record Tracking Satellites
       | 1002        | Bob                | Barns             | 2006-04-17   | 17-214-233-1215 | Wiltshire       | Swindon       | 1993-01-03 | *      |
       | 1003        | Chad               | Clarke            | 2013-02-04   | 17-214-233-1216 | Lincolnshire    | Lincoln       | 1993-01-03 | *      |
       | 1003        | Chad               | Clarke            | 2013-02-04   | 17-214-233-1216 | Lincolnshire    | Lincoln       | 1993-01-03 | *      |
-
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
@@ -90,13 +87,8 @@ Feature: [RTS-INC] Record Tracking Satellites
       | md5('1002') | 1993-01-03 | *      |
       | md5('1003') | 1993-01-03 | *      |
 
-
-
-
-
-
   @fixture.rts
-  Scenario: [RTS-INC-04] Load mixed stage + empty into non existent RTS - one cycle
+  Scenario: [RTS-INC-04] Load mixed stage and an empty load into non existent RTS - one cycle
     Given the RTS table does not exist
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
@@ -109,7 +101,7 @@ Feature: [RTS-INC] Record Tracking Satellites
     And I stage the STG_CUSTOMER data
     And I load the RTS rts
     And the RAW_STAGE table contains data
-      | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
+      | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE | SOURCE |
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
@@ -159,8 +151,6 @@ Feature: [RTS-INC] Record Tracking Satellites
       | md5('1008') | 1993-01-03 | *      |
       | md5('1009') | 1993-01-03 | *      |
 
-
-
   @fixture.rts
   Scenario: [RTS-INC-06] Load mixed stage + empty stage into empty RTS - two cycles
     Given I have an empty RAW_STAGE raw stage
@@ -177,7 +167,7 @@ Feature: [RTS-INC] Record Tracking Satellites
     And I stage the STG_CUSTOMER data
     And I load the RTS rts
     And the RAW_STAGE table contains data
-      | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
+      | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE | SOURCE |
     And I stage the STG_CUSTOMER data
     When I load the RTS rts
     Then the RTS table should contain expected data
@@ -187,9 +177,8 @@ Feature: [RTS-INC] Record Tracking Satellites
       | md5('1003') | 1993-01-01 | *      |
       | md5('1004') | 1993-01-01 | *      |
 
-
   @fixture.rts
-  Scenario: [RTS-INC-07] (1 SAT) Load mixed stages into a pre-populated RTS - two cycles
+  Scenario: [RTS-INC-07] Load mixed stages into a pre-populated RTS - two cycles
     Given the RTS rts is already populated with data
       | CUSTOMER_PK | LOAD_DATE  | SOURCE |
       | md5('1001') | 1992-12-31 | *      |
@@ -223,22 +212,3 @@ Feature: [RTS-INC] Record Tracking Satellites
       | md5('1007') | 1993-01-02 | *      |
       | md5('1008') | 1993-01-02 | *      |
       | md5('1009') | 1993-01-02 | *      |
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
