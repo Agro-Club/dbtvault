@@ -52,7 +52,7 @@ Feature: [RTS] Record Tracking Satellites
       | md5('1001') | 1993-01-01 | *      |
 
   @fixture.rts
-  Scenario: [RTS-04] Load duplicated data in one stage into a non-existent single satellite RTS
+  Scenario: [RTS-04] Load duplicated data in one stage into a non-existent single satellite RTS with multiple records
     Given the RTS table does not exist
     And the RAW_STAGE table contains data
       | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
@@ -132,3 +132,41 @@ Feature: [RTS] Record Tracking Satellites
       | md5('1004') | 1993-01-01 | *      |
 
   # TODO: RTS-08 Tests that 'duplicates' coming in on consecutive days are kept
+
+    @fixture.rts
+    Scenario: [RTS-08] load duplicate records over consecutive days
+      Given the RTS rts is already populated with data
+        | CUSTOMER_PK | LOAD_DATE  | SOURCE |
+        | md5('1001') | 1992-12-31 | *      |
+        | md5('1002') | 1992-12-31 | *      |
+      And the RAW_STAGE table contains data
+        | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
+        | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
+        | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-01 | *      |
+        | 1002        | Bob                | Barns             | 2006-04-17   | 17-214-233-1215 | Wiltshire       | Swindon       | 1993-01-01 | *      |
+        | 1003        | Chad               | Clarke            | 2013-02-04   | 17-214-233-1216 | Lincolnshire    | Lincoln       | 1993-01-01 | *      |
+        | 1004        | Dom                | Davies            | 2018-04-13   | 17-214-233-1217 | East Sussex     | Brighton      | 1993-01-01 | *      |
+
+      And I stage the STG_CUSTOMER data
+      And I load the RTS rts
+      And the RAW_STAGE table contains data
+        | CUSTOMER_ID | CUSTOMER_FIRSTNAME | CUSTOMER_LASTNAME | CUSTOMER_DOB | CUSTOMER_PHONE  | CUSTOMER_COUNTY | CUSTOMER_CITY | LOAD_DATE  | SOURCE |
+        | 1001        | Alice              | Andrews           | 1997-04-24   | 17-214-233-1214 | Oxfordshire     | Oxford        | 1993-01-02 | *      |
+        | 1002        | Bob                | Barns             | 2006-04-17   | 17-214-233-1215 | Wiltshire       | Swindon       | 1993-01-02 | *      |
+        | 1003        | Chad               | Clarke            | 2013-02-04   | 17-214-233-1216 | Lincolnshire    | Lincoln       | 1993-01-02 | *      |
+        | 1004        | Dom                | Davies            | 2018-04-13   | 17-214-233-1217 | East Sussex     | Brighton      | 1993-01-02 | *      |
+        | 1004        | Dom                | Davies            | 2018-04-13   | 17-214-233-1217 | East Sussex     | Brighton      | 1993-01-02 | *      |
+      And I stage the STG_CUSTOMER data
+      When I load the RTS rts
+      Then the RTS table should contain expected data
+        | CUSTOMER_PK | LOAD_DATE  | SOURCE |
+        | md5('1001') | 1992-12-31 | *      |
+        | md5('1002') | 1992-12-31 | *      |
+        | md5('1001') | 1993-01-01 | *      |
+        | md5('1002') | 1993-01-01 | *      |
+        | md5('1003') | 1993-01-01 | *      |
+        | md5('1004') | 1993-01-01 | *      |
+        | md5('1001') | 1993-01-02 | *      |
+        | md5('1002') | 1993-01-02 | *      |
+        | md5('1003') | 1993-01-02 | *      |
+        | md5('1004') | 1993-01-02 | *      |
