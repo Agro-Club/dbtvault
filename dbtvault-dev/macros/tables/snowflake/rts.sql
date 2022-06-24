@@ -40,24 +40,24 @@ union_columns AS (
         {{ src_source }},
         {{ src_ldts }}
     FROM get_cols
-        {%- if dbtvault.is_any_incremental() %}
-    UNION
+
+    UNION ALL
     SELECT
         {{ src_pk }},
         {{ src_source }},
         {{ src_ldts }}
-    FROM {{this}}
+    FROM get_cols
     WHERE {{ src_pk }} = NULL
     AND {{ src_source }} = NULL
     AND {{ src_ldts }} = NULL
 
-        {% endif %}
+
 ),
 
 
 records_to_insert AS (
     SELECT {{ dbtvault.prefix(source_cols, 'a', alias_target='target') }}
-    FROM get_cols AS a
+    FROM union_columns AS a
     {%- if dbtvault.is_any_incremental() %}
     LEFT JOIN {{ this }} AS d
     ON  a.{{ src_ldts }} = d.{{ src_ldts }}
@@ -67,7 +67,7 @@ records_to_insert AS (
     {% endif %}
 )
 
-SELECT * FROM union_columns
+SELECT * FROM records_to_insert
 
 {%- endmacro -%}
 

@@ -282,7 +282,7 @@ def rts_snowflake(context):
         "STG_CUSTOMER": {
             "column_types": {
                 "CUSTOMER_PK": "BINARY(16)",
-                "HASHDIFF": "BINARY(16)",
+                # "HASHDIFF": "BINARY(16)",
                 "EFFECTIVE_FROM": "DATE",
                 # "SATELLITE_NAME": "VARCHAR",
                 "CUSTOMER_ID": "VARCHAR",
@@ -296,46 +296,48 @@ def rts_snowflake(context):
                 "SOURCE": "VARCHAR"
             }
         },
-        # "STG_CUSTOMER_2SAT": {
-        #     "column_types": {
-        #         "CUSTOMER_PK": "BINARY(16)",
-        #         # "HASHDIFF_1": "BINARY(16)",
-        #         # "HASHDIFF_2": "BINARY(16)",
-        #         "EFFECTIVE_FROM": "DATE",
-        #         # "SATELLITE_1": "VARCHAR",
-        #         # "SATELLITE_2": "VARCHAR",
-        #         "CUSTOMER_ID": "VARCHAR",
-        #         "CUSTOMER_FIRSTNAME": "VARCHAR",
-        #         "CUSTOMER_LASTNAME": "VARCHAR",
-        #         "CUSTOMER_DOB": "DATE",
-        #         "CUSTOMER_PHONE": "VARCHAR",
-        #         "CUSTOMER_COUNTY": "VARCHAR",
-        #         "CUSTOMER_CITY": "VARCHAR",
-        #         "LOAD_DATE": "DATE",
-        #         "SOURCE": "VARCHAR"
-        #     }
-        # },
-        # "STG_CUSTOMER_3SAT": {
-        #     "column_types": {
-        #         "CUSTOMER_PK": "BINARY(16)",
-        #         # "HASHDIFF_1": "BINARY(16)",
-        #         # "HASHDIFF_2": "BINARY(16)",
-        #         # "HASHDIFF_3": "BINARY(16)",
-        #         "EFFECTIVE_FROM": "DATE",
-        #         # "SATELLITE_1": "VARCHAR",
-        #         # "SATELLITE_2": "VARCHAR",
-        #         # "SATELLITE_3": "VARCHAR",
-        #         # "CUSTOMER_ID": "VARCHAR",
-        #         "CUSTOMER_FIRSTNAME": "VARCHAR",
-        #         "CUSTOMER_LASTNAME": "VARCHAR",
-        #         "CUSTOMER_DOB": "DATE",
-        #         "CUSTOMER_PHONE": "VARCHAR",
-        #         "CUSTOMER_COUNTY": "VARCHAR",
-        #         "CUSTOMER_CITY": "VARCHAR",
-        #         "LOAD_DATE": "DATE",
-        #         "SOURCE": "VARCHAR"
-        #     }
-        # },
+        "STG_CUSTOMER_1": {
+            "column_types": {
+                "CUSTOMER_PK": "BINARY(16)",
+                # "HASHDIFF": "BINARY(16)",
+                # "HASHDIFF_1": "BINARY(16)",
+                # "HASHDIFF_2": "BINARY(16)",
+                "EFFECTIVE_FROM": "DATE",
+                # "SATELLITE_1": "VARCHAR",
+                # "SATELLITE_2": "VARCHAR",
+                "CUSTOMER_ID": "VARCHAR",
+                "CUSTOMER_FIRSTNAME": "VARCHAR",
+                "CUSTOMER_LASTNAME": "VARCHAR",
+                "CUSTOMER_DOB": "DATE",
+                "CUSTOMER_PHONE": "VARCHAR",
+                "CUSTOMER_COUNTY": "VARCHAR",
+                "CUSTOMER_CITY": "VARCHAR",
+                "LOAD_DATE": "DATE",
+                "SOURCE": "VARCHAR"
+            }
+        },
+        "STG_CUSTOMER_2": {
+            "column_types": {
+                "CUSTOMER_PK": "BINARY(16)",
+                # "HASHDIFF": "BINAREY(16)",
+                # "HASHDIFF_1": "BINARY(16)",
+                # "HASHDIFF_2": "BINARY(16)",
+                # "HASHDIFF_3": "BINARY(16)",
+                "EFFECTIVE_FROM": "DATE",
+                # "SATELLITE_1": "VARCHAR",
+                # "SATELLITE_2": "VARCHAR",
+                # "SATELLITE_3": "VARCHAR",
+                # "CUSTOMER_ID": "VARCHAR",
+                "CUSTOMER_FIRSTNAME": "VARCHAR",
+                "CUSTOMER_LASTNAME": "VARCHAR",
+                "CUSTOMER_DOB": "DATE",
+                "CUSTOMER_PHONE": "VARCHAR",
+                "CUSTOMER_COUNTY": "VARCHAR",
+                "CUSTOMER_CITY": "VARCHAR",
+                "LOAD_DATE": "DATE",
+                "SOURCE": "VARCHAR"
+            }
+        },
         "RTS": {
             "column_types": {
                 "CUSTOMER_PK": "BINARY(16)",

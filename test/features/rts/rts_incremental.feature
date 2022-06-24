@@ -178,7 +178,7 @@ Feature: [RTS-INC] Record Tracking Satellites
       | md5('1004') | 1993-01-01 | *      |
 
   @fixture.rts
-  Scenario: [RTS-INC-07] Load mixed stages into a pre-populated RTS - two cycles
+  Scenario: [RTS-INC-07] Load stage into a pre-populated RTS - two cycles
     Given the RTS rts is already populated with data
       | CUSTOMER_PK | LOAD_DATE  | SOURCE |
       | md5('1001') | 1992-12-31 | *      |
