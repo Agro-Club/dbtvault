@@ -8,6 +8,10 @@
 
 {%- macro default__rts(src_pk, src_ldts, src_source, source_model) -%}
 
+{{- dbtvault.check_required_parameters(src_pk=src_pk, src_ldts=src_ldts,
+                                       src_source=src_source,
+                                       source_model=source_model) -}}
+
 {%- set src_pk = dbtvault.escape_column_names(src_pk) -%}
 {%- set src_ldts = dbtvault.escape_column_names(src_ldts) -%}
 {%- set src_source = dbtvault.escape_column_names(src_source) -%}
@@ -42,6 +46,7 @@ union_columns AS (
     FROM get_cols
 
     UNION ALL
+
     SELECT
         {{ src_pk }},
         {{ src_source }},
@@ -50,10 +55,7 @@ union_columns AS (
     WHERE {{ src_pk }} = NULL
     AND {{ src_source }} = NULL
     AND {{ src_ldts }} = NULL
-
-
 ),
-
 
 records_to_insert AS (
     SELECT {{ dbtvault.prefix(source_cols, 'a', alias_target='target') }}
@@ -70,4 +72,3 @@ records_to_insert AS (
 SELECT * FROM records_to_insert
 
 {%- endmacro -%}
-
