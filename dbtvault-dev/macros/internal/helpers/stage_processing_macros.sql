@@ -1,5 +1,8 @@
 {%- macro process_columns_to_select(columns_list=none, exclude_columns_list=none) -%}
 
+    {% set columns_list = columns_list | map('upper') | list %}
+    {% set exclude_columns_list = exclude_columns_list | map('upper') | list %}
+
     {% set columns_to_select = [] %}
 
     {% if not dbtvault.is_list(columns_list) or not dbtvault.is_list(exclude_columns_list)  %}
@@ -85,5 +88,32 @@
     {%- for col_name in list_to_print -%}
         {{- col_name | indent(indent) -}}{{ ",\n    " if not loop.last }}
     {%- endfor -%}
+
+{%- endmacro -%}
+
+
+{%- macro extract_null_column_names(columns_dict=none) -%}
+
+    {%- set extracted_column_names = [] -%}
+
+    {%- if columns_dict is mapping -%}
+        {%- for key, value in columns_dict.items() -%}
+            {%- if dbtvault.is_something(value) -%}
+                {% if dbtvault.is_list(value) %}
+                    {% for col_name in value %}
+                        {%- do extracted_column_names.append(col_name) -%}
+                        {%- do extracted_column_names.append(col_name ~ "_ORIGINAL") -%}
+                    {% endfor %}
+                {%  else %}
+                    {%- do extracted_column_names.append(value) -%}
+                    {%- do extracted_column_names.append(value ~ "_ORIGINAL") -%}
+                {% endif %}
+            {%- endif -%}
+        {%- endfor -%}
+
+        {%- do return(extracted_column_names) -%}
+    {%- else -%}
+        {%- do return([]) -%}
+    {%- endif -%}
 
 {%- endmacro -%}

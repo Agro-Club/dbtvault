@@ -12,25 +12,36 @@
 
 {%- endmacro -%}
 
+
+
 {%- macro is_nothing(obj) -%}
 
-    {%- if obj is none or obj is undefined or not obj -%}
+    {%- if obj is none or obj is undefined or not obj or dbtvault.is_list(obj, empty_is_false=true) -%}
         {%- do return(true) -%}
     {%- else -%}
         {%- do return(false) -%}
     {%- endif -%}
 
 {%- endmacro -%}
+
+
 
 {%- macro is_something(obj) -%}
 
     {%- if obj is not none and obj is defined and obj -%}
-        {%- do return(true) -%}
+        {#- if an empty list, do not consider the object something -#}
+        {% if dbtvault.is_list(empty_is_false=true) %}
+            {%- do return(true) -%}
+        {%- else -%}
+            {%- do return(false) -%}
+        {%- endif -%}
     {%- else -%}
         {%- do return(false) -%}
     {%- endif -%}
 
 {%- endmacro -%}
+
+
 
 {%- macro is_expression(obj) -%}
 

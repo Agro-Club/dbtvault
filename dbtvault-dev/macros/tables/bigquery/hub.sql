@@ -1,27 +1,14 @@
-{%- macro bigquery__hub(src_pk, src_nk, src_ldts, src_source, source_model) -%}
+{%- macro bigquery__hub(src_pk, src_nk, src_extra_columns, src_ldts, src_source, source_model) -%}
 
-{{- dbtvault.check_required_parameters(src_pk=src_pk, src_nk=src_nk,
-                                       src_ldts=src_ldts, src_source=src_source,
-                                       source_model=source_model) -}}
-
-{%- set src_pk = dbtvault.escape_column_names(src_pk) -%}
-{%- set src_nk = dbtvault.escape_column_names(src_nk) -%}
-{%- set src_ldts = dbtvault.escape_column_names(src_ldts) -%}
-{%- set src_source = dbtvault.escape_column_names(src_source) -%}
-
-{%- set source_cols = dbtvault.expand_column_list(columns=[src_pk, src_nk, src_ldts, src_source]) -%}
+{%- set source_cols = dbtvault.expand_column_list(columns=[src_pk, src_nk, src_extra_columns, src_ldts, src_source]) -%}
 
 {%- if model.config.materialized == 'vault_insert_by_rank' %}
     {%- set source_cols_with_rank = source_cols + dbtvault.escape_column_names([config.get('rank_column')]) -%}
-{%- endif -%}
-
-{{ dbtvault.prepend_generated_by() }}
+{%- endif %}
 
 {{ 'WITH ' -}}
 
-{%- if not (source_model is iterable and source_model is not string) -%}
-    {%- set source_model = [source_model] -%}
-{%- endif -%}
+{%- set stage_count = source_model | length -%}
 
 {%- set ns = namespace(last_cte= "") -%}
 
@@ -29,7 +16,7 @@
 
 {%- set source_number = loop.index | string -%}
 
-    row_rank_{{ source_number }}_non_ranked AS (
+    row_rank_{{ source_number }} AS (
     {%- if model.config.materialized == 'vault_insert_by_rank' %}
     SELECT {{ dbtvault.prefix(source_cols_with_rank, 'rr') }},
     {%- else %}
@@ -41,17 +28,12 @@
            ) AS row_number
     FROM {{ ref(src) }} AS rr
     WHERE {{ dbtvault.multikey(src_pk, prefix='rr', condition='IS NOT NULL') }}
+    QUALIFY row_number = 1
     {%- set ns.last_cte = "row_rank_{}".format(source_number) %}
 ),
 
-row_rank_{{ source_number }} AS (
-SELECT * FROM row_rank_{{ source_number }}_non_ranked
-WHERE row_number = 1
-),
-
-
 {% endfor -%}
-{% if source_model | length > 1 %}
+{% if stage_count > 1 %}
 stage_union AS (
     {%- for src in source_model %}
     SELECT * FROM row_rank_{{ loop.index | string }}
@@ -77,9 +59,9 @@ stage_mat_filter AS (
     {%- set ns.last_cte = "stage_mat_filter" %}
 ),
 {%- endif -%}
-{%- if source_model | length > 1 %}
+{%- if stage_count > 1 %}
 
-    row_rank_union_non_ranked AS (
+    row_rank_union AS (
     SELECT ru.*,
            ROW_NUMBER() OVER(
                PARTITION BY {{ dbtvault.prefix([src_pk], 'ru') }}
@@ -87,12 +69,8 @@ stage_mat_filter AS (
            ) AS row_rank_number
     FROM {{ ns.last_cte }} AS ru
     WHERE {{ dbtvault.multikey(src_pk, prefix='ru', condition='IS NOT NULL') }}
+    QUALIFY row_rank_number = 1
     {%- set ns.last_cte = "row_rank_union" %}
-),
-
-row_rank_union AS (
-    SELECT * FROM row_rank_union_non_ranked
-    WHERE row_rank_number = 1
 ),
 
 {% endif %}

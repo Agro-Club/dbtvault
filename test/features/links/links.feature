@@ -220,7 +220,7 @@ Feature: [LNK] Links
       | md5('1006\|\|DEU') | md5('1006') | md5('DEU') | 1993-01-02 | CRM    |
 
   @fixture.multi_source_link
-  Scenario: [LNK-010] Union three staging tables to feed a link which does not exist
+  Scenario: [LNK-10] Union three staging tables to feed a link which does not exist
     Given the LINK table does not exist
     And the RAW_STAGE_SAP table contains data
       | CUSTOMER_ID | NATION_ID | CUSTOMER_NAME | CUSTOMER_DOB | CUSTOMER_PHONE  | LOAD_DATE  | SOURCE |
@@ -260,7 +260,7 @@ Feature: [LNK] Links
       | md5('1010\|\|ITA') | md5('1010') | md5('ITA') | 1993-01-02 | WEB    |
 
   @fixture.multi_source_link
-  Scenario: [LNK-011] Union three staging tables to feed empty link
+  Scenario: [LNK-11] Union three staging tables to feed empty link
     Given the LINK link is empty
     And the RAW_STAGE_SAP table contains data
       | CUSTOMER_ID | NATION_ID | CUSTOMER_NAME | CUSTOMER_DOB | CUSTOMER_PHONE  | LOAD_DATE  | SOURCE |
@@ -300,7 +300,7 @@ Feature: [LNK] Links
       | md5('1010\|\|ITA') | md5('1010') | md5('ITA') | 1993-01-02 | WEB    |
 
   @fixture.multi_source_link
-  Scenario: [LNK-012] Union three staging tables to feed empty link where NULL foreign keys are not added
+  Scenario: [LNK-12] Union three staging tables to feed empty link where NULL foreign keys are not added
     Given the LINK link is empty
     And the RAW_STAGE_SAP table contains data
       | CUSTOMER_ID | NATION_ID | CUSTOMER_NAME | CUSTOMER_DOB | CUSTOMER_PHONE  | LOAD_DATE  | SOURCE |
@@ -338,7 +338,7 @@ Feature: [LNK] Links
       | md5('1009\|\|DEU') | md5('1009') | md5('DEU') | 1993-01-02 | WEB    |
 
   @fixture.multi_source_link
-  Scenario: [LNK-013] Union three staging tables with duplicates to feed populated link
+  Scenario: [LNK-13] Union three staging tables with duplicates to feed populated link
     Given the LINK link is already populated with data
       | CUSTOMER_NATION_PK | CUSTOMER_FK | NATION_FK  | LOAD_DATE  | SOURCE |
       | md5('1001\|\|GBR') | md5('1001') | md5('GBR') | 1993-01-01 | CRM    |
@@ -396,7 +396,7 @@ Feature: [LNK] Links
       | md5('1010\|\|ITA') | md5('1010') | md5('ITA') | 1993-01-02 | WEB    |
 
   @fixture.multi_source_link
-  Scenario: [LNK-014] Load a stage table where a foreign key is NULL, no link is inserted
+  Scenario: [LNK-14] Load a stage table where a foreign key is NULL, no link is inserted
     Given the LINK link is already populated with data
       | CUSTOMER_NATION_PK | CUSTOMER_FK | NATION_FK  | LOAD_DATE  | SOURCE |
       | md5('1001\|\|GBR') | md5('1001') | md5('GBR') | 1993-01-01 | CRM    |
@@ -450,3 +450,23 @@ Feature: [LNK] Links
       | md5('1007\|\|ITA') | md5('1007') | md5('ITA') | 1993-01-02 | CRM    |
       | md5('1008\|\|AUS') | md5('1008') | md5('AUS') | 1993-01-02 | WEB    |
       | md5('1009\|\|DEU') | md5('1009') | md5('DEU') | 1993-01-02 | WEB    |
+
+  @fixture.single_source_link
+  Scenario: [LNK-15] Standard base load of a link with additional columns added
+    Given the LINK_AC table does not exist
+    And the RAW_STAGE table contains data
+      | CUSTOMER_ID | NATION_ID | CUSTOMER_NAME | CUSTOMER_MT_ID | CUSTOMER_DOB | CUSTOMER_PHONE  | LOAD_DATE  | SOURCE |
+      | 1001        | GBR       | Alice         | TPCH_CUSTOMER  | 1997-04-24   | 17-214-233-1214 | 1993-01-01 | CRM    |
+      | 1002        | POL       | Alice         | TPCH_CUSTOMER  | 2006-04-17   | 17-214-233-1214 | 1993-01-01 | CRM    |
+      | 1003        | AUS       | Bob           | TPCH_CUSTOMER  | 2013-02-04   | 17-214-233-1215 | 1993-01-01 | CRM    |
+      | 1006        | DEU       | Chad          | TPCH_CUSTOMER  | 2018-04-13   | 17-214-233-1216 | 1993-01-01 | CRM    |
+      | 1007        | ITA       | Dom           | TPCH_CUSTOMER  | 1990-01-01   | 17-214-233-1217 | 1993-01-01 | CRM    |
+    And I stage the STG_CUSTOMER data
+    When I load the LINK_AC link
+    Then the LINK_AC table should contain expected data
+      | CUSTOMER_NATION_PK | CUSTOMER_FK | NATION_FK  | CUSTOMER_MT_ID | LOAD_DATE  | SOURCE |
+      | md5('1001\|\|GBR') | md5('1001') | md5('GBR') | TPCH_CUSTOMER  | 1993-01-01 | CRM    |
+      | md5('1002\|\|POL') | md5('1002') | md5('POL') | TPCH_CUSTOMER  | 1993-01-01 | CRM    |
+      | md5('1003\|\|AUS') | md5('1003') | md5('AUS') | TPCH_CUSTOMER  | 1993-01-01 | CRM    |
+      | md5('1006\|\|DEU') | md5('1006') | md5('DEU') | TPCH_CUSTOMER  | 1993-01-01 | CRM    |
+      | md5('1007\|\|ITA') | md5('1007') | md5('ITA') | TPCH_CUSTOMER  | 1993-01-01 | CRM    |

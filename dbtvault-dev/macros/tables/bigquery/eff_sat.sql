@@ -1,27 +1,11 @@
-{%- macro bigquery__eff_sat(src_pk, src_dfk, src_sfk, src_start_date, src_end_date, src_eff, src_ldts, src_source, source_model) -%}
+{%- macro bigquery__eff_sat(src_pk, src_dfk, src_sfk, src_extra_columns, src_start_date, src_end_date, src_eff, src_ldts, src_source, source_model) -%}
 
-{{- dbtvault.check_required_parameters(src_pk=src_pk, src_dfk=src_dfk, src_sfk=src_sfk,
-                                       src_start_date=src_start_date, src_end_date=src_end_date,
-                                       src_eff=src_eff, src_ldts=src_ldts, src_source=src_source,
-                                       source_model=source_model) -}}
-
-{%- set src_pk = dbtvault.escape_column_names(src_pk) -%}
-{%- set src_dfk = dbtvault.escape_column_names(src_dfk) -%}
-{%- set src_sfk = dbtvault.escape_column_names(src_sfk) -%}
-{%- set src_start_date = dbtvault.escape_column_names(src_start_date) -%}
-{%- set src_end_date = dbtvault.escape_column_names(src_end_date) -%}
-{%- set src_eff = dbtvault.escape_column_names(src_eff) -%}
-{%- set src_ldts = dbtvault.escape_column_names(src_ldts) -%}
-{%- set src_source = dbtvault.escape_column_names(src_source) -%}
-
-{%- set source_cols = dbtvault.expand_column_list(columns=[src_pk, src_dfk, src_sfk, src_start_date, src_end_date, src_eff, src_ldts, src_source]) -%}
+{%- set source_cols = dbtvault.expand_column_list(columns=[src_pk, src_dfk, src_sfk, src_extra_columns, src_start_date, src_end_date, src_eff, src_ldts, src_source]) -%}
 {%- set fk_cols = dbtvault.expand_column_list(columns=[src_dfk, src_sfk]) -%}
 {%- set dfk_cols = dbtvault.expand_column_list(columns=[src_dfk]) -%}
 {%- set is_auto_end_dating = config.get('is_auto_end_dating', default=false) %}
 
-{%- set max_datetime = var('max_datetime', '9999-12-31 23:59:59.999') %}
-
-{{- dbtvault.prepend_generated_by() }}
+{%- set max_datetime = dbtvault.max_datetime() %}
 
 WITH source_data AS (
     SELECT {{ dbtvault.prefix(source_cols, 'a', alias_target='source') }}
@@ -57,20 +41,33 @@ latest_records AS (
 latest_open AS (
     SELECT {{ dbtvault.alias_all(source_cols, 'c') }}
     FROM latest_records AS c
-    WHERE DATE(c.{{ src_end_date }}) = DATE('{{max_datetime}}')
+    WHERE DATE(c.{{ src_end_date }}) = CAST(PARSE_DATETIME('%F %H:%M:%E6S', '{{ max_datetime }}') AS DATE)
 ),
 
 {# Selecting the closed records of the most recent records for each link hashkey -#}
 latest_closed AS (
     SELECT {{ dbtvault.alias_all(source_cols, 'd') }}
     FROM latest_records AS d
-    WHERE DATE(d.{{ src_end_date }}) != DATE('{{max_datetime}}')
+    WHERE DATE(d.{{ src_end_date }}) != CAST(PARSE_DATETIME('%F %H:%M:%E6S', '{{ max_datetime }}') AS DATE)
 ),
 
 {# Identifying the completely new link relationships to be opened in eff sat -#}
 new_open_records AS (
     SELECT DISTINCT
-        {{ dbtvault.alias_all(source_cols, 'f') }}
+        {{ dbtvault.prefix([src_pk], 'f') }},
+        {{ dbtvault.alias_all(fk_cols, 'f') }},
+        {% if dbtvault.is_something(src_extra_columns) %}
+            {{ dbtvault.prefix([src_extra_columns], 'f') }},
+        {% endif -%}
+        {%- if is_auto_end_dating %}
+        f.{{ src_eff }} AS {{ src_start_date }},
+        {% else %}
+        f.{{ src_start_date }} AS {{ src_start_date }},
+        {% endif %}
+        f.{{ src_end_date }} AS {{ src_end_date }},
+        f.{{ src_eff }} AS {{ src_eff }},
+        f.{{ src_ldts }},
+        f.{{ src_source }}
     FROM source_data AS f
     LEFT JOIN latest_records AS lr
     ON {{ dbtvault.multikey(src_pk, prefix=['f','lr'], condition='=') }}
@@ -82,7 +79,14 @@ new_reopened_records AS (
     SELECT DISTINCT
         {{ dbtvault.prefix([src_pk], 'lc') }},
         {{ dbtvault.alias_all(fk_cols, 'lc') }},
-        lc.{{ src_start_date }} AS {{ src_start_date }},
+        {% if dbtvault.is_something(src_extra_columns) %}
+            {{ dbtvault.prefix([src_extra_columns], 'g') }},
+        {% endif -%}
+        {%- if is_auto_end_dating %}
+        g.{{ src_eff }} AS {{ src_start_date }},
+        {% else %}
+        g.{{ src_start_date }} AS {{ src_start_date }},
+        {% endif %}
         g.{{ src_end_date }} AS {{ src_end_date }},
         g.{{ src_eff }} AS {{ src_eff }},
         g.{{ src_ldts }},
@@ -90,7 +94,7 @@ new_reopened_records AS (
     FROM source_data AS g
     INNER JOIN latest_closed AS lc
     ON {{ dbtvault.multikey(src_pk, prefix=['g','lc'], condition='=') }}
-    WHERE CAST((g.{{ src_end_date }}) AS DATE) = CAST(('{{ max_datetime }}') AS DATE)
+    WHERE CAST((g.{{ src_end_date }}) AS DATE) = CAST(PARSE_DATETIME('%F %H:%M:%E6S', '{{ max_datetime }}') AS DATE)
 ),
 
 {%- if is_auto_end_dating %}
@@ -101,6 +105,9 @@ new_closed_records AS (
     SELECT DISTINCT
         {{ dbtvault.prefix([src_pk], 'lo') }},
         {{ dbtvault.alias_all(fk_cols, 'lo') }},
+        {% if dbtvault.is_something(src_extra_columns) %}
+            {{ dbtvault.prefix([src_extra_columns], 'h') }},
+        {% endif -%}
         lo.{{ src_start_date }} AS {{ src_start_date }},
         h.{{ src_eff }} AS {{ src_end_date }},
         h.{{ src_eff }} AS {{ src_eff }},
@@ -112,15 +119,18 @@ new_closed_records AS (
     WHERE ({{ dbtvault.multikey(src_sfk, prefix=['lo', 'h'], condition='<>', operator='OR') }})
 ),
 
-{#- else if is_auto_end_dating -#}
+{#- else if (not) is_auto_end_dating -#}
 {% else %}
 
 new_closed_records AS (
     SELECT DISTINCT
-        lo.{{ src_pk }},
+        {{ dbtvault.prefix([src_pk], 'lo') }},
         {{ dbtvault.alias_all(fk_cols, 'lo') }},
-        lo.{{ src_start_date }} AS {{ src_start_date }},
-        h.{{ src_eff }} AS {{ src_end_date }},
+        {% if dbtvault.is_something(src_extra_columns) %}
+            {{ dbtvault.prefix([src_extra_columns], 'h') }},
+        {% endif -%}
+        h.{{ src_start_date }} AS {{ src_start_date }},
+        h.{{ src_end_date }} AS {{ src_end_date }},
         h.{{ src_eff }} AS {{ src_eff }},
         h.{{ src_ldts }},
         lo.{{ src_source }}
@@ -129,7 +139,7 @@ new_closed_records AS (
     ON lo.{{ src_pk }} = h.{{ src_pk }}
     LEFT JOIN latest_closed AS lc
     ON lc.{{ src_pk }} = h.{{ src_pk }}
-    WHERE CAST((h.{{ src_end_date }}) AS DATE) != CAST(('{{ max_datetime }}') AS DATE)
+    WHERE CAST((h.{{ src_end_date }}) AS DATE) != CAST(PARSE_DATETIME('%F %H:%M:%E6S', '{{ max_datetime }}') AS DATE)
     AND lo.{{ src_pk }} IS NOT NULL
     AND lc.{{ src_pk }} IS NULL
 ),
